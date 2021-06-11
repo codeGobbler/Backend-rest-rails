@@ -13,7 +13,7 @@ module Api
 
       # GET /users/:id
       def show
-        render json: @user
+        render json: @user, status: 200
       end
 
       # POST /users
