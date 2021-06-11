@@ -39,12 +39,9 @@ module Api
 
       # DELETE /users/:id
       def destroy
+        @user.facts.delete
         @user.destroy
-        if @user.destroy
-          render json: { message: 'User successfully deleted' }, status: 200
-        else
-          render json: { error: "User cannot be deleted: #{@user.errors.full_messages.to_sentence}" }, status: 400
-        end
+        render json: { message: 'User successfully deleted' }, status: 200
       end
 
       private
