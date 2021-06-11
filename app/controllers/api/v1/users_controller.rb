@@ -30,13 +30,21 @@ module Api
 
       # PUT /users/:id
       def update
-        # your code godes here
+        if @user.update(user_params)
+          render json: { message: 'User updated' }, status: 202
+        else
+          render json: { error: "User not updated: #{@user.errors.full_messages.to_sentence}" }, status: 400
+        end
       end
 
       # DELETE /users/:id
       def destroy
         @user.destroy
-        render json: { message: 'User record successfully deleted.' }, status: 200
+        if @user.destroy
+          render json: { message: 'User successfully deleted' }, status: 200
+        else
+          render json: { error: "User cannot be deleted: #{@user.errors.full_messages.to_sentence}" }, status: 400
+        end
       end
 
       private

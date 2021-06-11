@@ -3,6 +3,8 @@
 module Api
   module V1
     class FactsController < ApplicationController
+      before_action :set_fact, only: %i[show update destroy]
+
       def index
         @user = User.find(params[:user_id])
         render json: @user.facts # NOTE: that because the facts route is nested inside users
@@ -11,7 +13,9 @@ module Api
 
       # GET /users/:user_id/facts/:id
       def show
-        # your code goes here
+        @user = User.find(params[:user_id])
+        render json: @user.facts(params[:id]) if @user.valid
+        render json: { error: "User error: #{@user.errors.full_messages.to_sentence}" }
       end
 
       # POST /users/:user_id/facts
@@ -28,22 +32,35 @@ module Api
 
       # PUT /users/:user_id/facts/:id
       def update
-        # your code goes here
+        if @fact.update
+          render json: { message: 'Fact updated' }, status: 202
+        else
+          render json: { error: "Fact not updated: #{@fact.errors.full_messages.to_sentence}" }, status: 400
+        end
       end
 
       # DELETE /users/:user_id/facts/:id
       def destroy
-        # your code goes here
+        set_user
+        if @fact.destroy
+          render json: { message: 'Fact successfully deleted' }, status: 200
+        else
+          render json: { error: "Fact cannot be deleted: #{@fact.errors.full_messages.to_sentence}" }, status: 400
+        end
       end
 
       private
 
       def fact_params
-        params.require(:fact).permit(:fact_text, :likes)
+        params.require(:fact).permit(:fact_text, :likes, :user_id)
       end
 
       def set_fact
         @fact = Fact.find(params[:id])
+      end
+
+      def set_user
+        @user = Fact.user_id.find(params[:id])
       end
     end
   end
