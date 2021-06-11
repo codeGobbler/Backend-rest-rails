@@ -14,8 +14,11 @@ module Api
       # GET /users/:user_id/facts/:id
       def show
         @user = User.find(params[:user_id])
-        render json: @user.facts(params[:id]) if @user.valid
-        render json: { error: "User error: #{@user.errors.full_messages.to_sentence}" }
+        if @user.facts
+          render json: @user.facts.find(params[:id])
+        else
+          render json: { error: "User error: #{@user.errors.full_messages.to_sentence}" }
+        end
       end
 
       # POST /users/:user_id/facts
@@ -32,7 +35,7 @@ module Api
 
       # PUT /users/:user_id/facts/:id
       def update
-        if @fact.update
+        if @fact.update(fact_params)
           render json: { message: 'Fact updated' }, status: 202
         else
           render json: { error: "Fact not updated: #{@fact.errors.full_messages.to_sentence}" }, status: 400
@@ -41,7 +44,7 @@ module Api
 
       # DELETE /users/:user_id/facts/:id
       def destroy
-        set_user
+        @fact.destroy
         if @fact.destroy
           render json: { message: 'Fact successfully deleted' }, status: 200
         else
