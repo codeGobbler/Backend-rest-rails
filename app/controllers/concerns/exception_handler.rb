@@ -18,7 +18,7 @@ module ExceptionHandler
     end
 
     rescue_from ActiveRecord::InvalidForeignKey do |e|
-        render json: { error: e.message }, status: :unprocessable_entity
-      end
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
   end
 end

@@ -31,7 +31,7 @@ module Api
       # PUT /users/:id
       def update
         if @user.update(user_params)
-          render json: { message: 'User updated' }, status: 202
+          render json: { message: 'User updated' }, status: 200
         else
           render json: { error: "User not updated: #{@user.errors.full_messages.to_sentence}" }, status: 400
         end

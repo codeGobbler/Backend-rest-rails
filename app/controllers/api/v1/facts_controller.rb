@@ -36,7 +36,7 @@ module Api
       # PUT /users/:user_id/facts/:id
       def update
         if @fact.update(fact_params)
-          render json: { message: 'Fact updated' }, status: 202
+          render json: { message: 'Fact updated' }, status: 200
         else
           render json: { error: "Fact not updated: #{@fact.errors.full_messages.to_sentence}" }, status: 400
         end
